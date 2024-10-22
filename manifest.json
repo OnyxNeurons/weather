@@ -15,5 +15,13 @@
       "method": "GET",
       "path": "/get"
     }
+  ],
+  "nav": [
+    {
+      "title": "Today",
+      "url": "/",
+      "icon": "sun",
+      "items": []
+    }
   ]
 }
