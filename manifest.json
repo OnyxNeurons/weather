@@ -1,5 +1,6 @@
 {
-  "name": "weather",
+  "name": "Weather",
+  "slug": "weather",
   "version": "1.0.0",
   "description": "Simple weather neuron",
   "pages": [
