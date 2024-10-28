@@ -1,0 +1,28 @@
+services:
+  weather-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: onyx-neuron-weather
+    volumes:
+      - ./backend/src:/backend/src
+      - ./frontend/dist:/frontend
+    networks:
+      - onyx-network
+  weather-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: onyx-neuron-weather-frontend
+    volumes:
+      - ./frontend/src:/frontend/src
+    networks:
+      - onyx-network
+
+networks:
+  onyx-network:
+    external: true
+    name: onyx-network
+    driver: bridge

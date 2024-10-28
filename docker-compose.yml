@@ -1,0 +1,13 @@
+services:
+  weather:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: onyx-neuron-weather
+    networks:
+      - onyx-network
+
+networks:
+  onyx-network:
+    external: true
+    name: onyx-network
