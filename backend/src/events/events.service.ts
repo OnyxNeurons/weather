@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import {
   RabbitSubscribe,
   RabbitRPC,
@@ -7,7 +7,7 @@ import {
 import { readFileSync } from 'fs';
 
 @Injectable()
-export class EventsService {
+export class EventsService implements OnModuleInit {
   constructor(private readonly amqpConnection: AmqpConnection) {}
 
   @RabbitSubscribe({
@@ -49,15 +49,18 @@ export class EventsService {
   }
 
   async onModuleInit() {
-    try {
-      const manifest = JSON.parse(readFileSync('/manifest.json', 'utf-8'));
-      await this.amqpConnection.publish('neuron.events', 'neuron.discovery', {
-        manifest,
-        timestamp: new Date(),
-      });
-      console.log('Discovery event emitted successfully');
-    } catch (error) {
-      console.error('Failed to emit discovery event:', error);
-    }
+    // Wait for connection to be established
+    this.amqpConnection.managedConnection.on('connect', async () => {
+      try {
+        const manifest = JSON.parse(readFileSync('/manifest.json', 'utf-8'));
+        await this.amqpConnection.publish('neuron.events', 'neuron.discovery', {
+          manifest,
+          timestamp: new Date(),
+        });
+        console.log('Discovery event emitted successfully');
+      } catch (error) {
+        console.error('Failed to emit discovery event:', error);
+      }
+    });
   }
 }
