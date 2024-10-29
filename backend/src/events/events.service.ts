@@ -48,19 +48,33 @@ export class EventsService implements OnModuleInit {
     };
   }
 
+  @RabbitSubscribe({
+    exchange: 'neuron.events',
+    routingKey: 'neuron.ask_for_discovery',
+    queue: 'weather_discovery_requests',
+  })
+  async handleDiscovery(data: any) {
+    console.log('Discovery event received in weather neuron:', data);
+    await this.sendDiscoveryEvent();
+  }
+
   async onModuleInit() {
     // Wait for connection to be established
     this.amqpConnection.managedConnection.on('connect', async () => {
-      try {
-        const manifest = JSON.parse(readFileSync('/manifest.json', 'utf-8'));
-        await this.amqpConnection.publish('neuron.events', 'neuron.discovery', {
-          manifest,
-          timestamp: new Date(),
-        });
-        console.log('Discovery event emitted successfully');
-      } catch (error) {
-        console.error('Failed to emit discovery event:', error);
-      }
+      await this.sendDiscoveryEvent();
     });
+  }
+
+  async sendDiscoveryEvent() {
+    try {
+      const manifest = JSON.parse(readFileSync('/manifest.json', 'utf-8'));
+      await this.amqpConnection.publish('neuron.events', 'neuron.discovery', {
+        manifest,
+        timestamp: new Date(),
+      });
+      console.log('Discovery event emitted successfully');
+    } catch (error) {
+      console.error('Failed to emit discovery event:', error);
+    }
   }
 }
