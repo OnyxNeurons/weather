@@ -1,13 +1,14 @@
 services:
   weather-backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
       target: development
     container_name: onyx-neuron-weather
     volumes:
       - ./backend/src:/backend/src
       - ./frontend/dist:/frontend
+      - ./manifest.json:/manifest.json
     networks:
       - onyx-network
   weather-frontend:
@@ -18,6 +19,7 @@ services:
     container_name: onyx-neuron-weather-frontend
     volumes:
       - ./frontend/src:/frontend/src
+      - ./frontend/dist:/frontend/dist
     networks:
       - onyx-network
 

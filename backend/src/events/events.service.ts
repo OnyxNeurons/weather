@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { RabbitSubscribe, RabbitRPC, AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import {
+  RabbitSubscribe,
+  RabbitRPC,
+  AmqpConnection,
+} from '@golevelup/nestjs-rabbitmq';
+import { readFileSync } from 'fs';
 
 @Injectable()
 export class EventsService {
@@ -22,9 +27,9 @@ export class EventsService {
   async handleCurrentWeather(data: any) {
     return {
       temperature: 22,
-      condition: 'sunny', 
+      condition: 'sunny',
       humidity: 65,
-      location: 'Paris'
+      location: 'Paris',
     };
   }
 
@@ -39,19 +44,16 @@ export class EventsService {
         { day: 'Monday', temp: 22, condition: 'sunny' },
         { day: 'Tuesday', temp: 20, condition: 'cloudy' },
         { day: 'Wednesday', temp: 18, condition: 'rainy' },
-      ]
+      ],
     };
   }
 
   async onModuleInit() {
     try {
+      const manifest = JSON.parse(readFileSync('/manifest.json', 'utf-8'));
       await this.amqpConnection.publish('neuron.events', 'neuron.discovery', {
-        name: 'weather',
-        version: '1.0.0',
+        manifest,
         timestamp: new Date(),
-        pages: [
-          { path: '/', componentName: 'WeatherPage' },
-        ]
       });
       console.log('Discovery event emitted successfully');
     } catch (error) {

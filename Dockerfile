@@ -27,6 +27,7 @@ FROM backend AS production
 COPY --from=frontend /frontend/dist /frontend
 COPY --from=backend /backend/dist /backend/dist
 COPY --from=backend /backend/node_modules /backend/node_modules
+COPY manifest.json /manifest.json
 
 CMD ["node", "dist/main.js"]
 

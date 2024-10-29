@@ -9,13 +9,6 @@
       "path": "/"
     }
   ],
-  "api": [
-    {
-      "name": "weather",
-      "method": "GET",
-      "path": "/get"
-    }
-  ],
   "nav": [
     {
       "title": "Today",
