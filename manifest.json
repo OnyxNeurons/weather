@@ -13,7 +13,7 @@
   "nav": [
     {
       "title": "Today",
-      "url": "/",
+      "url": "/dashboard/neuron/weather",
       "icon": "sun",
       "items": []
     }
